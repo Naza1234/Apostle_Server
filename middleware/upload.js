@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 
 // File filter to accept only images and PDFs
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['.png', '.jpg', '.jpeg', '.gif', '.pdf'];
+  const allowedTypes = ['.png', '.jpg', '.jpeg', '.gif', '.pdf' ,'.mp4'];
   const ext = path.extname(file.originalname).toLowerCase();
   if (allowedTypes.includes(ext)) {
     cb(null, true);
@@ -29,6 +29,6 @@ exports.upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // limit to 5MB
+    fileSize: 15 * 1024 * 1024, // limit to 5MB
   },
 });

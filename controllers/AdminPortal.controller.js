@@ -3,10 +3,13 @@ const mongoose = require('mongoose');
 const User = require('../models/User.model');
 const bcrypt = require('bcrypt');
 const Reserve = require('../models/Reserve.model');
+const VideoModel = require('../models/Videos.model');
 const PowerBank = require('../models/PowerBank.model');
 const UserProfileImage = require('../models/UserProfileImage.model');
 const UserSchoolProfile = require('../models/UserSchoolProfile.model');
 const LateReturnPrice = require('../models/LateReturnPrice.model');
+const fs = require('fs');
+const path = require('path');
 
 
 // Utility: Calculate due date based on rental time
@@ -26,6 +29,24 @@ function calculateDueDate(dateRented) {
     return dueDate;
   }
   
+
+  
+// Helper to encode file to base64 and remove it
+
+const encodeAndRemoveFile = (filePath, mimeType) => {
+  const fileData = fs.readFileSync(filePath);
+  const base64 = fileData.toString('base64');
+  const dataUri = `data:${mimeType};base64,${base64}`;
+
+  // Remove the file after encoding
+  fs.unlinkSync(filePath);
+
+  return dataUri;
+};
+
+
+
+
 
 exports.getSummaryStats = async (req, res) => {
     try {
@@ -328,5 +349,40 @@ exports.getUserInfoWithPinFromReserve = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+exports.uploadVideo = async (req, res) => {
+  try {
+    // Check if user exists and hasn't completed setup
+   
+   
+       const Video = new VideoModel({
+        FilePath: req.file.path,
+      }); 
+      console.log(req.file.path)
+      await Video.save();
+  
+
+    res.status(200).json(Video);
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.GetVideo = async (req, res) => {
+  try {
+    // Check if user exists and hasn't completed setup
+    const Video = await VideoModel.find({});
+    // Encode file into base64 with data URI
+   
+    res.status(200).json(Video);
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ message: error.message });
   }
 };
