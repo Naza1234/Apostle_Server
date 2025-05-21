@@ -70,31 +70,44 @@ if (rentals.length > 0){
   }
 }
 
-if(reserves.length >0){
-    // Optional: Do the same for `reserve` if needed
-    for (const reserve of reserves) {
-      const dueDate = new Date(now.getTime() + reserve.Duration * 60 * 60 * 1000);
-      const user = await User.findById(reserve.UserId);
-      if (now > dueDate) {
-        await Reserve.updateOne(
-          { _id: reserve._id },
-          { $set: { Rent: "Denied" } }
-        );
-        
-      } else {
-        const timeRemainingMs = dueDate - now;
-        const timeRemainingMinutes = timeRemainingMs / (1000 * 60);
-  
-        if (timeRemainingMinutes <= 30) {
-          const data ={
-            Type : reserve.Type,
-            Time:new Date(dueDate).toLocaleString(),
-    
-            }
-            SendReserveEndingEmail(user.UserEmail,user.UserName,data)
-        }
+if (reserves.length > 0) {
+  for (const reserve of reserves) {
+    const dueDate = new Date(reserve.Reserved.getTime() + reserve.Duration * 60 * 60 * 1000);
+    const user = await User.findById(reserve.UserId);
+    const powerBank = await PowerBank.findOne({ Name: reserve.Type });
+
+    if (!powerBank) continue; // Skip if power bank not found
+
+    if (now > dueDate) {
+      // Mark as Denied
+      await Reserve.updateOne(
+        { _id: reserve._id },
+        { $set: { Rent: "Denied" } }
+      );
+
+      // Refund to user's account balance
+      const refundAmount = powerBank.Price;
+      const currentBalance = parseFloat(user.UserAccountBalance || "0");
+      const updatedBalance = currentBalance + refundAmount;
+
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { UserAccountBalance: updatedBalance.toString() } }
+      );
+
+    } else {
+      const timeRemainingMs = dueDate - now;
+      const timeRemainingMinutes = timeRemainingMs / (1000 * 60);
+
+      if (timeRemainingMinutes <= 30) {
+        const data = {
+          Type: reserve.Type,
+          Time: dueDate.toLocaleString(),
+        };
+        SendReserveEndingEmail(user.UserEmail, user.UserName, data);
       }
     }
+  }
 }
 };
 
