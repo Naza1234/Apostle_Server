@@ -37,7 +37,8 @@ function calculateDueDate(dateRented) {
 
 
 const monitorRentalActivity = async () => {
-
+ 
+console.log("Rental monitor ran at:", new Date().toLocaleString());
 
   const now = new Date();
 
@@ -116,7 +117,7 @@ if (reserves.length > 0) {
 
 
 function StartRentalMonitor() {
-  console.log("Rental monitor started:", new Date().toLocaleString());
+  
 
   // Run immediately on start
   monitorRentalActivity();
