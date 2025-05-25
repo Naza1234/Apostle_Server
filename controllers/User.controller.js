@@ -117,17 +117,18 @@ exports.loginUser = async (req, res) => {
     }
 
     // Check if email is verified
-    if (!user.EmailVerified) {
-      await VerificationEmail(
-        UserEmail,
-        "New User",
-        `${RedirectionUrl}?verificationcode=${user.EmailVerificationCode}`
-      );
-      return res.status(403).json({
-        status: "error",
-        message: "Email not verified. Please check your email for the verification link.",
-      });
-    }
+    // if (!user.EmailVerified) {
+      // await VerificationEmail(
+       // UserEmail,
+       // "New User",
+       // `${RedirectionUrl}?
+// verificationcode=$//{user.EmailVerificationCode}`
+  //    );
+   //   return res.status(403).json({
+    //    status: "error",
+     //   message: "Email not verified. Please //check your email for the verification link.",
+     // });
+    //}
 
     // Compare password
     const isMatch = await bcrypt.compare(UserPassword, user.UserPassword);
