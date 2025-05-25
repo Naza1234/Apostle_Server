@@ -243,9 +243,9 @@ exports.updateUserInfoIfNotSetup = async (req, res) => {
   try {
     // Check if user exists and AccountSetup is false
     const user = await User.findById(id);
-    if (!user || user.AccountSetup) {
-      return res.status(403).json({ message: 'Unauthorized update' });
-    }
+    // if (!user || user.AccountSetup) {
+     // return res.status(403).json({ message: //'Unauthorized update' });
+   // }
 
     // Perform the update without calling save
     const updatedUser = await User.findByIdAndUpdate(
@@ -425,7 +425,7 @@ exports.uploadSchoolProfile = async (req, res) => {
 
       await schoolProfile.save();
          // Update user's AccountSetup to true
-     // await User.findByIdAndUpdate(id, { AccountSetup: true });
+     await User.findByIdAndUpdate(id, { AccountSetup: true });
 
     }
 
