@@ -239,13 +239,22 @@ exports.deleteUser = async (req, res) => {
 exports.updateUserInfoIfNotSetup = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
-  try {
-    const user = await User.findById(id);
-    if (!user || user.AccountSetup) return res.status(403).json({ message: 'Unauthorized update' });
 
-    Object.assign(user, updateData);
-    await user.save();
-    res.status(200).json(user);
+  try {
+    // Check if user exists and AccountSetup is false
+    const user = await User.findById(id);
+    if (!user || user.AccountSetup) {
+      return res.status(403).json({ message: 'Unauthorized update' });
+    }
+
+    // Perform the update without calling save
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true } // return the updated document
+    );
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
