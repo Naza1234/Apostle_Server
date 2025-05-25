@@ -416,7 +416,7 @@ exports.uploadSchoolProfile = async (req, res) => {
 
       await schoolProfile.save();
          // Update user's AccountSetup to true
-      await User.findByIdAndUpdate(id, { AccountSetup: true });
+     // await User.findByIdAndUpdate(id, { AccountSetup: true });
 
     }
 
