@@ -34,7 +34,14 @@ const UserSchema = new mongoose.Schema({
 
 // Hash UserPassword and UserPin before saving (for create and save)
 UserSchema.pre('save', async function (next) {
-  if (this.isModified('UserPassword')) {
+  
+// Set UserName like 'userapN' if not provided
+  if (!this.UserName) {
+    const count = await mongoose.model('User').countDocuments();
+    this.UserName = `user ap ${count + 1}`;
+  }
+
+if (this.isModified('UserPassword')) {
     const salt = await bcrypt.genSalt(10);
     this.UserPassword = await bcrypt.hash(this.UserPassword, salt);
   }
