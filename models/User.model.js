@@ -37,7 +37,7 @@ UserSchema.pre('save', async function (next) {
   
 // Set UserName like 'userapN' if not provided
   if (!this.UserName) {
-    const count = await mongoose.model('User').countDocuments();
+    const count = await this.constructor.countDocuments();
     this.UserName = `user ap ${count + 1}`;
   }
 
