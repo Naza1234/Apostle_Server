@@ -139,9 +139,9 @@ exports.loginUser = async (req, res) => {
       });
     }
 
-    if(user.EmailVerified){
+  
      await LogInEmail(UserEmail,user.UserName || "New User")
-    }
+
     // Login successful
     return res.status(200).json({
       status: "success",
