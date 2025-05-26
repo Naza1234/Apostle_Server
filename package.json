@@ -25,6 +25,8 @@
     "node-cron": "^4.0.5",
     "nodemailer": "^6.10.1",
     "nodemon": "^2.0.22",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.1.91",
     "stripe": "^14.3.0"
   }
 }

@@ -20,6 +20,8 @@ router.post('/upload-Video', upload.single('file'), controller.uploadVideo);
 
 router.get('/get-Video', controller.GetVideo);
 
+router.post('/verify-user', upload.single('file'), controller.CheckUserProfileInfo);
+
 
 
 module.exports = router;
